@@ -1,0 +1,6 @@
+{
+  "name": "Sport Accessories - Cricket Store Pakistan",
+  "description": "Bold, athletic cricket gear and sports accessories online store in Pakistan featuring bats, gloves, balls, pads, and complete kits with nationwide delivery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
