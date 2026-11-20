@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { X, CheckCircle, ShieldAlert, Truck, MessageCircle, Copy } from 'lucide-react';
-import { useShop } from '../context/ShopContext';
+import React, { useState } from 'react';import { X, CheckCircle, ShieldAlert, Truck, MessageCircle, Copy } from 'lucide-react';
+import { useShop, trackMetaPixel } from '../context/ShopContext';
 import { Product, PAKISTAN_CITIES } from '../data/products';
 import { formatPKR, generateOrderWhatsAppMessage, buildWhatsAppUrl, STORE_PHONE_DISPLAY } from '../utils/formatters';
 
@@ -64,6 +63,18 @@ export const CheckoutModal: React.FC = () => {
     if (!validateForm()) return;
 
     const newOrderId = `SA-PK-${Math.floor(1000 + Math.random() * 9000)}`;
+    trackMetaPixel('Purchase', {
+      content_ids: cart.map((item) => item.product.id),
+      content_type: 'product',
+      contents: cart.map((item) => ({
+        id: item.product.id,
+        quantity: item.quantity,
+        item_price: item.product.pricePKR,
+      })),
+      value: cartTotal,
+      currency: 'PKR',
+      order_id: newOrderId,
+    });
     setConfirmedOrderId(newOrderId);
     setIsSubmitted(true);
   };
