@@ -1,6 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, INITIAL_PRODUCTS } from '../data/products';
 
+export const trackMetaPixel = (
+  eventName: 'AddToCart' | 'Purchase',
+  parameters: Record<string, unknown>
+) => {
+  if (typeof window === 'undefined') return;
+  const pixel = (window as Window & {
+    fbq?: (action: 'track', eventName: string, parameters?: Record<string, unknown>) => void;
+  }).fbq;
+  pixel?.('track', eventName, parameters);
+};
+
 export interface CartItem {
   product: Product;
   quantity: number;
@@ -152,6 +163,14 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addToCart = (product: Product, size?: string, qty = 1) => {
     const chosenSize = size || (product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'Standard');
+    trackMetaPixel('AddToCart', {
+      content_ids: [product.id],
+      content_name: product.name,
+      content_type: 'product',
+      contents: [{ id: product.id, quantity: qty, item_price: product.pricePKR }],
+      value: product.pricePKR * qty,
+      currency: 'PKR',
+    });
     
     setCart((prevCart) => {
       const existingIdx = prevCart.findIndex(
